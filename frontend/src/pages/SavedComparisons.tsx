@@ -39,7 +39,7 @@ export default function SavedComparisons() {
   async function handleDelete(id: string, query: string) {
     setDeletingId(id);
     setDeleteError(null);
-    // Optimistic UI: remove immediately, roll back on failure.
+  
     const prevItems = items;
     setItems((cur) => cur.filter((c) => c.id !== id));
     try {
