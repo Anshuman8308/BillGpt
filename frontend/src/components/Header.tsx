@@ -44,7 +44,7 @@ export default function Header({ showBack = false }: { showBack?: boolean }) {
         <Link to="/" className="flex items-center gap-1 font-extrabold text-ink text-lg tracking-tight">
           Bill
           <span className="text-[10px] font-bold bg-ink text-cream px-1.5 py-0.5 rounded-md -rotate-6">
-            OPT
+            GPT
           </span>
         </Link>
       </div>
