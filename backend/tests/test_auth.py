@@ -30,13 +30,13 @@ def test_password_is_hashed_not_plaintext(client):
 
     register(client, "hashcheck@test.com", "password123")
     db_gen = client.app.dependency_overrides
-    # Pull a session the same way the app does, via the overridden get_db
+    
     from app.database import get_db
 
     db = next(db_gen[get_db]())
     user = db.query(models.User).filter(models.User.email == "hashcheck@test.com").first()
     assert user.hashed_password != "password123"
-    assert user.hashed_password.startswith("$2b$")  # bcrypt prefix
+    assert user.hashed_password.startswith("$2b$") 
 
 
 def test_login_success(client):
