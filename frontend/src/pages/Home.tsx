@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useRef, useState } from "react";
 import Header from "../components/Header";
 import SearchBar from "../components/SearchBar";
 import LoadingSequence from "../components/LoadingSequence";
@@ -22,8 +22,6 @@ function bubbleTextFor(query: string): string {
   return `Find me the best deal on ${query}`;
 }
 
-const DEBOUNCE_MS = 550;
-
 const MIN_LOADING_DISPLAY_MS = 1300;
 
 export default function Home() {
@@ -36,10 +34,7 @@ export default function Home() {
 
   const abortControllerRef = useRef<AbortController | null>(null);
   const requestIdRef = useRef(0);
-  const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  
   const lastSearchedRef = useRef<string>("");
- 
   const isVoiceActiveRef = useRef(false);
 
   const runSearch = useCallback(async (query: string) => {
@@ -48,7 +43,6 @@ export default function Home() {
 
     lastSearchedRef.current = trimmed;
 
-   
     abortControllerRef.current?.abort();
     const controller = new AbortController();
     abortControllerRef.current = controller;
@@ -72,7 +66,7 @@ export default function Home() {
     try {
       const res = await searchDeals(trimmed, controller.signal);
       await settleNoEarlierThanMinDisplay();
-      if (requestIdRef.current !== requestId) return; 
+      if (requestIdRef.current !== requestId) return;
       setResult(res);
       setStatus(res.deals.length === 0 ? "empty" : "success");
     } catch (err) {
@@ -84,25 +78,7 @@ export default function Home() {
     }
   }, []);
 
-  
-  useEffect(() => {
-    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-    const trimmed = inputValue.trim();
-    if (trimmed.length < 3) return;
-    if (isVoiceActiveRef.current) return;
-    if (trimmed === lastSearchedRef.current) return;
-
-    debounceTimerRef.current = setTimeout(() => {
-      runSearch(trimmed);
-    }, DEBOUNCE_MS);
-
-    return () => {
-      if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
-    };
-  }, [inputValue, runSearch]);
-
   function handleExplicitSearch(query: string) {
-    if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     setInputValue(query);
     runSearch(query);
   }
@@ -114,6 +90,7 @@ export default function Home() {
   async function handleSave() {
     if (!result?.cheapest || !result.best_way_to_pay) return;
     setSaveState("saving");
+
     try {
       await saveComparison({
         query: result.query,
@@ -141,6 +118,7 @@ export default function Home() {
             <h1 className="text-2xl font-extrabold text-ink mt-1 max-w-xs">
               What do you want to save on today?
             </h1>
+
             <div className="grid grid-cols-1 gap-2.5 mt-7 w-full max-w-xs">
               {QUICK_ACTIONS.map((action) => (
                 <button
@@ -158,7 +136,6 @@ export default function Home() {
 
         {!showGreeting && (
           <div className="flex-1 flex flex-col gap-4 pt-2">
-            {/* User message bubble */}
             <div className="flex justify-end">
               <div className="bg-white rounded-3xl rounded-tr-md px-4 py-2.5 shadow-card max-w-[80%] text-sm font-medium text-ink animate-fade-in">
                 {activeQuery ? bubbleTextFor(activeQuery) : ""}
@@ -177,7 +154,10 @@ export default function Home() {
             )}
 
             {status === "error" && (
-              <ErrorState message={errorMessage || "Something went wrong."} onRetry={() => activeQuery && runSearch(activeQuery)} />
+              <ErrorState
+                message={errorMessage || "Something went wrong."}
+                onRetry={() => activeQuery && runSearch(activeQuery)}
+              />
             )}
 
             {status === "empty" && (
@@ -191,8 +171,8 @@ export default function Home() {
               <div className="flex flex-col gap-4 animate-fade-in">
                 {result.failed_sources.length > 0 && (
                   <p className="text-xs text-ink/70 bg-cream/80 rounded-xl px-3 py-2">
-                    {result.failed_sources.join(", ")} {result.failed_sources.length === 1 ? "was" : "were"} temporarily
-                    unavailable — showing results from the other sources.
+                    {result.failed_sources.join(", ")}{" "}
+                    {result.failed_sources.length === 1 ? "was" : "were"} temporarily unavailable — showing results from the other sources.
                   </p>
                 )}
 
@@ -200,11 +180,20 @@ export default function Home() {
 
                 <div className="flex flex-col gap-3">
                   {result.deals.map((deal, i) => (
-                    <DealCard key={`${deal.source}-${i}`} deal={deal} isCheapest={result.cheapest?.source === deal.source && result.cheapest?.price === deal.price} />
+                    <DealCard
+                      key={`${deal.source}-${i}`}
+                      deal={deal}
+                      isCheapest={
+                        result.cheapest?.source === deal.source &&
+                        result.cheapest?.price === deal.price
+                      }
+                    />
                   ))}
                 </div>
 
-                {result.best_way_to_pay && <BestWayToPayCard pay={result.best_way_to_pay} />}
+                {result.best_way_to_pay && (
+                  <BestWayToPayCard pay={result.best_way_to_pay} />
+                )}
 
                 <button
                   onClick={handleSave}
