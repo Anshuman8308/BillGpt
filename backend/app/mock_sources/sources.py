@@ -1,13 +1,8 @@
-"""Mock third-party price sources.
 
-Each source simulates a different vendor's API with its own raw response
-shape. The `normalize` service converts these into a common `Deal` schema.
-A source can also randomly "fail" to exercise partial-failure handling.
-"""
 import random
 from typing import Callable
 
-# Deterministic-ish but varied base prices per category keyword.
+
 BASE_PRICES = {
     "groceries": 1000,
     "milk": 60,
@@ -26,8 +21,7 @@ def _base_price_for(query: str) -> float:
     for key, price in BASE_PRICES.items():
         if key in q:
             return price
-    # Deterministic pseudo-random base price from the query so repeated
-    # searches for the same term are stable within a session.
+    
     seed = sum(ord(c) for c in q) or 1
     return 200 + (seed % 20) * 75
 
@@ -36,9 +30,6 @@ def _maybe_fail(failure_rate: float) -> bool:
     return random.random() < failure_rate
 
 
-# ---------------------------------------------------------------------------
-# Source 1: AmazonMock — raw shape uses "listing_price" / "mrp"
-# ---------------------------------------------------------------------------
 def fetch_amazon_mock(query: str) -> dict:
     if _maybe_fail(0.05):
         raise ConnectionError("AmazonMock timed out")
@@ -56,9 +47,7 @@ def fetch_amazon_mock(query: str) -> dict:
     }
 
 
-# ---------------------------------------------------------------------------
-# Source 2: FlipkartMock — raw shape uses "sale_price" / "list_price"
-# ---------------------------------------------------------------------------
+
 def fetch_flipkart_mock(query: str) -> dict:
     if _maybe_fail(0.05):
         raise ConnectionError("FlipkartMock unavailable")
@@ -76,9 +65,6 @@ def fetch_flipkart_mock(query: str) -> dict:
     }
 
 
-# ---------------------------------------------------------------------------
-# Source 3: BigBasketMock — raw shape uses "price" as string with currency
-# ---------------------------------------------------------------------------
 def fetch_bigbasket_mock(query: str) -> dict:
     if _maybe_fail(0.05):
         raise ConnectionError("BigBasketMock 503")
@@ -96,10 +82,6 @@ def fetch_bigbasket_mock(query: str) -> dict:
     }
 
 
-# ---------------------------------------------------------------------------
-# Source 4: MyntraMock — occasionally returns malformed/partial data on
-# purpose so the normalizer's error handling can be demonstrated.
-# ---------------------------------------------------------------------------
 def fetch_myntra_mock(query: str) -> dict:
     if _maybe_fail(0.15):
         raise ConnectionError("MyntraMock connection reset")
@@ -107,7 +89,7 @@ def fetch_myntra_mock(query: str) -> dict:
     base = _base_price_for(query)
     price = round(base * random.uniform(1.0, 1.12), 2)
 
-    # ~10% chance of malformed data (missing price) to test resilience.
+    
     if random.random() < 0.1:
         return {"vendor": "Myntra", "name": f"{query.title()}", "price": None}
 
