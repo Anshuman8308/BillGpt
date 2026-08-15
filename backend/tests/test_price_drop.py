@@ -63,7 +63,7 @@ def test_price_history_is_scoped_per_user(client):
         client.get("/search?q=widget4", headers=auth_headers(token_a))
         res_b = client.get("/search?q=widget4", headers=auth_headers(token_b))
 
-    # B has never searched this before — must be no_history, not influenced by A
+    
     assert res_b.json()["price_drop"]["status"] == "no_history"
 
 
@@ -72,7 +72,7 @@ def test_price_history_normalizes_query_casing_and_punctuation(client):
     with patch("app.routers.search.ALL_SOURCES", {"Amazon": _fixed_source(100.0)}):
         client.get("/search?q=Milk!", headers=auth_headers(token))
         res = client.get("/search?q=  milk", headers=auth_headers(token))
-    # Same normalized query ("milk") should find the prior history
+    
     assert res.json()["price_drop"]["status"] == "same"
 
 
