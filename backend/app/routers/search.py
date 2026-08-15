@@ -36,7 +36,7 @@ def search(
         except (ConnectionError, SourceDataError, TimeoutError) as exc:
             logger.warning("Source %s failed for query '%s': %s", source_name, query, exc)
             failed_sources.append(source_name)
-        except Exception as exc:  # defensive: never let one bad source 500 the request
+        except Exception as exc:  
             logger.error("Unexpected error from source %s: %s", source_name, exc)
             failed_sources.append(source_name)
 
@@ -53,7 +53,7 @@ def search(
     deals.sort(key=lambda d: d.price)
     cheapest = min((d for d in deals if d.in_stock), key=lambda d: d.price, default=deals[0])
 
-    cards = db.query(models.Card).filter(models.Card.is_active == True).all()  # noqa: E712
+    cards = db.query(models.Card).filter(models.Card.is_active == True).all()  
     best_pay = compute_best_way_to_pay(deals, cards)
 
     price_drop = get_price_drop(db, current_user.id, query, cheapest)
