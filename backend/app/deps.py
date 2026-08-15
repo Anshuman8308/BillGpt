@@ -13,11 +13,7 @@ def get_current_user(
     credentials: HTTPAuthorizationCredentials = Depends(bearer_scheme),
     db: Session = Depends(get_db),
 ) -> models.User:
-    """Resolves the current authenticated user from the Bearer token.
-
-    Raises 401 for missing/invalid/expired tokens so the frontend can
-    distinguish 'not logged in' from other errors and redirect to login.
-    """
+   
     if credentials is None:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
