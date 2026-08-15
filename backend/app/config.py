@@ -5,9 +5,7 @@ load_dotenv()
 
 
 class Settings:
-    # Default to local SQLite so the app runs with zero setup.
-    # For production, set DATABASE_URL to a Postgres connection string, e.g.:
-    # postgresql://user:password@host:5432/dbname
+   
     DATABASE_URL: str = os.getenv("DATABASE_URL", "sqlite:///./price_compare.db")
 
     JWT_SECRET: str = os.getenv("JWT_SECRET", "dev-secret-change-me-in-production")
