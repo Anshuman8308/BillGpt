@@ -38,8 +38,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
       });
   }, []);
 
-  // Listen for global 401s dispatched by the API layer via a custom event,
-  // so any expired/invalid token anywhere in the app routes back to login.
+  
   useEffect(() => {
     function onUnauthorized() {
       api.clearToken();
