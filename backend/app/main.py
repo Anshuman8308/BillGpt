@@ -17,8 +17,7 @@ logger = logging.getLogger("price_compare")
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    # Creates tables if they don't exist yet (see alembic/ for real migrations)
-    # and seeds the card reward data.
+   
     Base.metadata.create_all(bind=engine)
     seed()
     yield
@@ -37,7 +36,7 @@ app.add_middleware(
 
 @app.exception_handler(RequestValidationError)
 async def validation_exception_handler(request: Request, exc: RequestValidationError):
-    # Return clean, non-leaky validation messages instead of raw tracebacks.
+    
     errors = [{"field": ".".join(str(p) for p in e["loc"][1:]), "message": e["msg"]} for e in exc.errors()]
     return JSONResponse(status_code=status.HTTP_422_UNPROCESSABLE_ENTITY, content={"detail": errors})
 
