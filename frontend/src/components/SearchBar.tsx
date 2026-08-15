@@ -7,10 +7,7 @@ interface SearchBarProps {
   onSubmit: (query: string) => void;
   disabled?: boolean;
   placeholder?: string;
-  /** Notified whenever voice listening starts/stops, so the parent can
-   * suspend its own debounced-search effect while live speech transcript
-   * is streaming into the input (otherwise a mid-sentence pause could
-   * trigger a premature search on an incomplete transcript). */
+
   onListeningChange?: (isListening: boolean) => void;
 }
 
@@ -27,12 +24,12 @@ export default function SearchBar({
 
   useEffect(() => {
     if (transcript) onChange(transcript);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+  
   }, [transcript]);
 
   useEffect(() => {
     onListeningChange?.(isListening);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+   
   }, [isListening]);
 
   const prevListening = useRef(isListening);
@@ -41,7 +38,7 @@ export default function SearchBar({
       onSubmit(transcript.trim());
     }
     prevListening.current = isListening;
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    
   }, [isListening]);
 
   function handleSubmit(e: React.FormEvent) {
