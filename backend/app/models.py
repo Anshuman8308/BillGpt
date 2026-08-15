@@ -40,7 +40,7 @@ class Card(Base):
     id = Column(String, primary_key=True, default=gen_uuid)
     name = Column(String, unique=True, nullable=False)
     issuer = Column(String, nullable=False)
-    reward_rate = Column(Float, nullable=False)  # e.g. 0.05 = 5% back
+    reward_rate = Column(Float, nullable=False) 
     is_active = Column(Boolean, default=True)
 
 
@@ -52,11 +52,11 @@ class SavedComparison(Base):
     query = Column(String, nullable=False)
     created_at = Column(DateTime, default=datetime.utcnow)
 
-    # Full normalized deal list at time of save
+
     deals = Column(JSON, nullable=False)
-    # The cheapest deal (denormalized snapshot for fast display)
+    
     cheapest_deal = Column(JSON, nullable=False)
-    # The computed best-way-to-pay recommendation
+    
     best_way_to_pay = Column(JSON, nullable=False)
 
     user = relationship("User", back_populates="comparisons")
