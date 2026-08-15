@@ -23,13 +23,7 @@ function bubbleTextFor(query: string): string {
 }
 
 const DEBOUNCE_MS = 550;
-// The 3-stage LoadingSequence animation (matching the reference screenshots)
-// takes ~1.15s to play through. The backend mock search typically resolves
-// in well under 100ms, which would cut the animation off before the user
-// ever sees it. Enforcing a minimum loading duration lets the polished
-// staged loading UI actually be visible, without adding real latency to
-// slower/production backends (it only ever pads, never blocks beyond the
-// real response time when that's already longer).
+
 const MIN_LOADING_DISPLAY_MS = 1300;
 
 export default function Home() {
@@ -43,15 +37,9 @@ export default function Home() {
   const abortControllerRef = useRef<AbortController | null>(null);
   const requestIdRef = useRef(0);
   const debounceTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-  // Tracks the last query that was actually searched (by any path), so the
-  // debounce effect can skip re-firing an identical search — prevents
-  // quick-action clicks / voice auto-submit from causing a redundant
-  // duplicate request ~550ms later when they also update `inputValue`.
+  
   const lastSearchedRef = useRef<string>("");
-  // While the user is actively speaking, live interim transcript flows into
-  // `inputValue` on every partial result. Debounced search must be
-  // suspended during that window — otherwise a natural pause mid-sentence
-  // could fire a search on an incomplete transcript.
+ 
   const isVoiceActiveRef = useRef(false);
 
   const runSearch = useCallback(async (query: string) => {
@@ -60,8 +48,7 @@ export default function Home() {
 
     lastSearchedRef.current = trimmed;
 
-    // Cancel any in-flight request — prevents a slow earlier response from
-    // overwriting the result of a newer search (stale/out-of-order guard).
+   
     abortControllerRef.current?.abort();
     const controller = new AbortController();
     abortControllerRef.current = controller;
@@ -85,7 +72,7 @@ export default function Home() {
     try {
       const res = await searchDeals(trimmed, controller.signal);
       await settleNoEarlierThanMinDisplay();
-      if (requestIdRef.current !== requestId) return; // stale response, ignore
+      if (requestIdRef.current !== requestId) return; 
       setResult(res);
       setStatus(res.deals.length === 0 ? "empty" : "success");
     } catch (err) {
@@ -97,11 +84,7 @@ export default function Home() {
     }
   }, []);
 
-  // Debounced-as-you-type search: fires only after the user pauses typing,
-  // and only for queries with meaningful length. Skipped while voice is
-  // active, and skipped if this exact query was just searched via another
-  // path (quick action / explicit submit / voice) to avoid a duplicate
-  // network call.
+  
   useEffect(() => {
     if (debounceTimerRef.current) clearTimeout(debounceTimerRef.current);
     const trimmed = inputValue.trim();
