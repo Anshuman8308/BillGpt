@@ -5,7 +5,7 @@ import re
 from pydantic import BaseModel, EmailStr, Field, ConfigDict, field_validator
 
 
-# ---------- Auth ----------
+
 
 class UserCreate(BaseModel):
     email: EmailStr
@@ -53,7 +53,7 @@ class Token(BaseModel):
     user: UserOut
 
 
-# ---------- Deals / Search ----------
+
 
 class Deal(BaseModel):
     source: str
@@ -85,7 +85,7 @@ class BestWayToPay(BaseModel):
 
 
 class PriceDrop(BaseModel):
-    status: str  # "cheaper" | "increased" | "same" | "no_history"
+    status: str  
     difference: Optional[float] = None
     previous_price: Optional[float] = None
     message: str
@@ -100,7 +100,7 @@ class SearchResponse(BaseModel):
     failed_sources: List[str] = Field(default_factory=list)
 
 
-# ---------- Saved Comparisons ----------
+
 
 class SavedComparisonCreate(BaseModel):
     query: str
@@ -119,7 +119,7 @@ class SavedComparisonOut(BaseModel):
     best_way_to_pay: BestWayToPay
 
 
-# ---------- Cards ----------
+
 
 class CardOut(BaseModel):
     model_config = ConfigDict(from_attributes=True)
