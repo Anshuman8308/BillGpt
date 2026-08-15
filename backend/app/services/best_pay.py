@@ -1,14 +1,4 @@
-"""'Best way to pay' calculation.
 
-Definition (per assignment spec):
-  - Start with the cheapest source's price.
-  - For each active seeded card, compute the effective price if that card's
-    reward rate is applied to EACH deal (not just the cheapest one) —
-    a card's reward could make a slightly pricier source cheaper overall.
-  - Recommend whichever (source, optional card) combination yields the
-    lowest effective price. If no card beats the plain cheapest price,
-    recommend the cheapest source with no card.
-"""
 from typing import List, Optional
 
 from app.models import Card
