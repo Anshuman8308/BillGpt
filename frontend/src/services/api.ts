@@ -63,7 +63,7 @@ async function request<T>(
   try {
     body = await res.json();
   } catch {
-    // no body
+   
   }
 
   if (!res.ok) {
@@ -74,8 +74,7 @@ async function request<T>(
         ? shaped.detail.map((d) => `${d.field}: ${d.message}`).join(", ")
         : shaped.detail;
     }
-    // Don't fire the global logout event for login/register attempts themselves —
-    // a wrong password there is a form error, not an expired session.
+  
     const isAuthEntryPoint = path === "/auth/login" || path === "/auth/register";
     if (res.status === 401 && !isAuthEntryPoint) {
       window.dispatchEvent(new Event("price-compare:unauthorized"));
@@ -86,7 +85,7 @@ async function request<T>(
   return body as T;
 }
 
-// ---------- Auth ----------
+
 
 export function register(email: string, password: string) {
   return request<{ access_token: string; user: User }>("/auth/register", {
@@ -110,13 +109,13 @@ export function fetchMe() {
   return request<User>("/auth/me");
 }
 
-// ---------- Search ----------
+
 
 export function searchDeals(query: string, signal?: AbortSignal) {
   return request<SearchResponse>(`/search?q=${encodeURIComponent(query)}`, {}, { signal });
 }
 
-// ---------- Comparisons ----------
+
 
 export function saveComparison(payload: {
   query: string;
@@ -142,7 +141,7 @@ export function deleteComparison(id: string) {
   return request<void>(`/comparisons/${id}`, { method: "DELETE" });
 }
 
-// ---------- Cards ----------
+
 
 export function listCards() {
   return request<Card[]>("/cards");
