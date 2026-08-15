@@ -32,8 +32,7 @@ def list_comparisons(
     db: Session = Depends(get_db),
     current_user: models.User = Depends(get_current_user),
 ):
-    # Ownership enforced at the query level: only this user's rows are ever
-    # fetched from the database, regardless of what the frontend sends.
+  
     return (
         db.query(models.SavedComparison)
         .filter(models.SavedComparison.user_id == current_user.id)
@@ -57,7 +56,7 @@ def get_comparison(
         .first()
     )
     if record is None:
-        # 404, not 403 — never reveal whether the ID exists for another user.
+    
         raise HTTPException(status_code=404, detail="Comparison not found.")
     return record
 
