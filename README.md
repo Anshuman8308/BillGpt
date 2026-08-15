@@ -193,46 +193,7 @@ alembic revision --autogenerate -m "describe change"  # after editing models.py
 
 ---
 
-## Testing
 
-```bash
-cd backend
-pip install -r requirements-dev.txt   # pytest, httpx (only needed for tests)
-python -m pytest tests/ -v
-```
-
-44 tests covering: full auth flow (including duplicate email, weak
-password, wrong password, invalid/expired token), search aggregation and
-normalization, partial-source-failure and malformed-data resilience,
-best-way-to-pay math (independently verified via brute-force comparison in
-the test itself, not just hardcoded expected values), saved-comparison
-CRUD, **strict ownership isolation** between two real registered users, and
-price-drop tracking (cheaper / increased / same / no-history, and per-user
-isolation).
-
-Tests run against an isolated in-memory SQLite database — they never touch
-your local dev database file.
-
-```bash
-cd frontend
-npx tsc --noEmit      # typecheck
-npm run build          # production build
-```
-
-### What has and hasn't been verified
-Backend behavior above was verified two ways: the automated pytest suite,
-and live manual testing via `curl` during development (registering real
-users, searching, saving, confirming cross-user 404s, etc.). The frontend
-has been verified via TypeScript compilation and a clean production build,
-but **has not been tested in an actual running browser** — no headless
-browser could be installed in the development sandbox (no network access
-to Chromium/Playwright's download servers, and the system's `chromium`
-package is a snap-only stub with no working binary). Layout, click
-interactions, and animations were reasoned about at the source/Tailwind-class
-level, not observed rendering. Worth a manual click-through pass before
-final submission if that matters for evaluation.
-
----
 
 ## API Overview
 
@@ -274,6 +235,8 @@ Full request/response shapes: `backend/app/schemas.py`.
 
 ## Deployment
 
-Not included here by design — deployment steps (Postgres → Render backend
-→ Vercel frontend → CORS wiring) were provided separately and are meant to
-be run by whoever owns the hosting accounts.
+- Frontend: Vercel
+- Backend: Render
+- Database: Neon PostgreSQL
+
+The frontend communicates with the deployed FastAPI backend through `VITE_API_URL`, and the backend is configured with the deployed frontend origin through `CORS_ORIGINS`.
