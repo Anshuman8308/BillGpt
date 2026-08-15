@@ -1,9 +1,4 @@
-"""Normalizes heterogeneous raw source payloads into the common Deal shape.
 
-Each source has its own raw structure (see mock_sources/sources.py). This
-module is the single place that knows how to interpret each one, so the
-rest of the backend only ever deals with the normalized `Deal` schema.
-"""
 import re
 from typing import Optional
 
