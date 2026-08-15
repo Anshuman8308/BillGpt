@@ -183,13 +183,7 @@ Frontend runs at `http://localhost:5173`.
 |---|---|---|
 | `VITE_API_URL` | Yes | Base URL of the backend |
 
-### Database & migrations
 
-```bash
-cd backend
-alembic upgrade head                                  # apply migrations
-alembic revision --autogenerate -m "describe change"  # after editing models.py
-```
 
 ---
 
