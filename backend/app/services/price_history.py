@@ -1,8 +1,4 @@
-"""Price-drop indicator bonus feature.
 
-Compares the current search's cheapest price against the last time this
-user searched a similar/same query, persisted in `search_history`.
-"""
 import re
 from typing import Optional
 
@@ -59,7 +55,7 @@ def get_price_drop(db: Session, user_id: str, query: str, cheapest: Deal) -> Pri
                 message="No price change since your last check.",
             )
 
-    # Record this check for next time.
+  
     entry = models.SearchHistory(
         user_id=user_id,
         normalized_query=norm_q,
