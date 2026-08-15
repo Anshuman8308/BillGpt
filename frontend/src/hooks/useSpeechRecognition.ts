@@ -1,7 +1,6 @@
 import { useCallback, useEffect, useRef, useState } from "react";
 
-// Minimal ambient types for the Web Speech API since TS's DOM lib doesn't
-// include it in most default configs.
+
 interface SpeechRecognitionResultLike {
   isFinal: boolean;
   0: { transcript: string };
@@ -66,8 +65,7 @@ export function useSpeechRecognition() {
     };
     recognition.onerror = (event) => {
       if (event.error === "no-speech") {
-        // Benign: the mic was on but nothing was said (e.g. a pause).
-        // Not worth alarming the user with an error message.
+        
         setIsListening(false);
         return;
       }
@@ -90,8 +88,7 @@ export function useSpeechRecognition() {
     setIsListening(false);
   }, []);
 
-  // Ensure an in-progress recognition session is stopped if the component
-  // using this hook unmounts (e.g. navigating away) while still listening.
+
   useEffect(() => {
     return () => {
       recognitionRef.current?.stop();
