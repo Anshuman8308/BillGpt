@@ -21,8 +21,7 @@ def client():
     TestingSessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
     Base.metadata.create_all(bind=engine)
 
-    # Seed cards directly (bypassing app.seed's own engine/session, which
-    # points at the real DATABASE_URL, not this in-memory test DB).
+   
     db = TestingSessionLocal()
     for card in SEED_CARDS:
         db.add(models.Card(**card, is_active=True))
@@ -38,11 +37,7 @@ def client():
 
     app.dependency_overrides[get_db] = override_get_db
 
-    # Deliberately NOT using TestClient as a context manager: that would
-    # trigger the app's real @app.on_event("startup") handler, which seeds
-    # cards against the REAL DATABASE_URL (the dev SQLite file), not this
-    # isolated in-memory test DB. Tables/seed data here are set up manually
-    # above instead.
+
     test_client = TestClient(app)
     yield test_client
 
