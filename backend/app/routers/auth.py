@@ -39,8 +39,7 @@ def login(payload: schemas.UserLogin, db: Session = Depends(get_db)):
 
 @router.post("/logout")
 def logout(current_user: models.User = Depends(get_current_user)):
-    # Stateless JWT: logout is handled client-side by discarding the token.
-    # Endpoint exists so the frontend has a clean, explicit logout call.
+   
     return {"detail": "Logged out."}
 
 
