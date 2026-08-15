@@ -23,7 +23,7 @@ def test_search_returns_normalized_deals_from_all_sources(client):
     assert len(body["deals"]) >= 1
     sources_seen = {d["source"] for d in body["deals"]}
     assert sources_seen.issubset({"Amazon", "Flipkart", "BigBasket", "Myntra"})
-    # Every deal must be normalized to the common shape
+    
     for deal in body["deals"]:
         assert "price" in deal
         assert "item_name" in deal
@@ -86,9 +86,9 @@ def test_search_partial_source_failure_still_returns_results(client):
     assert res.status_code == 200
     body = res.json()
     assert body["failed_sources"] == ["Amazon"]
-    assert len(body["deals"]) == 2  # the other two sources still came through
+    assert len(body["deals"]) == 2  
     assert body["cheapest"] is not None
-    assert body["cheapest"]["source"] == "Flipkart"  # 90 < BigBasket's 95
+    assert body["cheapest"]["source"] == "Flipkart" 
 
 
 def test_search_malformed_source_data_excluded_not_crashed(client):
@@ -157,9 +157,7 @@ def test_best_way_to_pay_applies_best_card_to_the_cheapest_deal(client):
     assert body["cheapest"]["source"] == "Amazon"
     assert body["cheapest"]["price"] == 100.0
 
-    # HDFC Regalia is the highest seeded rate (5%). Best pay must be
-    # Amazon (the cheapest deal) + HDFC, at 100 * 0.95 = 95 — genuinely
-    # computed, not just echoing the plain cheapest price.
+    
     pay = body["best_way_to_pay"]
     assert pay["source"] == "Amazon"
     assert pay["card_name"] == "HDFC Regalia"
@@ -201,7 +199,7 @@ def test_best_way_to_pay_examines_every_deal_x_card_combination(client):
 
     result = compute_best_way_to_pay(deals, cards)
 
-    # Independently brute-force the expected answer and cross-check.
+    
     expected = min(
         ((d, c, round(d.price * (1 - c.reward_rate), 2)) for d in deals for c in cards),
         key=lambda t: t[2],
@@ -209,8 +207,7 @@ def test_best_way_to_pay_examines_every_deal_x_card_combination(client):
     assert result.source == expected[0].source
     assert result.card_name == expected[1].name
     assert result.effective_price == expected[2]
-    # And confirm it's specifically the cheapest deal (B) + richest card (Z),
-    # per the uniform-rate math explained above.
+    
     assert result.source == "B"
     assert result.card_name == "BigRewardCard"
     assert result.effective_price == 36.0
@@ -260,4 +257,4 @@ def test_best_way_to_pay_excludes_out_of_stock_deals(client):
         Deal(source="Flipkart", item_name="x", price=50.0, currency="INR", in_stock=True),
     ]
     result = compute_best_way_to_pay(deals, cards=[])
-    assert result.source == "Flipkart"  # the cheap out-of-stock deal must be skipped
+    assert result.source == "Flipkart"  
