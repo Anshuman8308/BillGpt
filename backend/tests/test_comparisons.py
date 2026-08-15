@@ -82,7 +82,7 @@ def test_delete_nonexistent_comparison_404(client):
     assert res.status_code == 404
 
 
-# ---------- Ownership isolation (critical requirement) ----------
+
 
 def test_user_cannot_list_another_users_comparisons(client):
     token_a = register(client, "ownerA@test.com")
@@ -92,7 +92,7 @@ def test_user_cannot_list_another_users_comparisons(client):
 
     res = client.get("/comparisons", headers=auth_headers(token_b))
     assert res.status_code == 200
-    assert res.json() == []  # B sees nothing of A's
+    assert res.json() == []  
 
 
 def test_user_cannot_get_another_users_comparison_by_id(client):
@@ -102,7 +102,7 @@ def test_user_cannot_get_another_users_comparison_by_id(client):
     saved = client.post("/comparisons", json=_sample_payload(), headers=auth_headers(token_a)).json()
 
     res = client.get(f"/comparisons/{saved['id']}", headers=auth_headers(token_b))
-    assert res.status_code == 404  # not 403 — must not confirm existence
+    assert res.status_code == 404  
 
 
 def test_user_cannot_delete_another_users_comparison(client):
@@ -114,7 +114,7 @@ def test_user_cannot_delete_another_users_comparison(client):
     res = client.delete(f"/comparisons/{saved['id']}", headers=auth_headers(token_b))
     assert res.status_code == 404
 
-    # Confirm it still exists for the real owner
+   
     res = client.get(f"/comparisons/{saved['id']}", headers=auth_headers(token_a))
     assert res.status_code == 200
 
