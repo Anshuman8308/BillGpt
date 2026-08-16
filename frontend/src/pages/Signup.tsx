@@ -45,7 +45,7 @@ export default function Signup() {
         <div className="flex items-center gap-1 font-extrabold text-ink text-xl mb-1">
           Bill
           <span className="text-[10px] font-bold bg-ink text-cream px-1.5 py-0.5 rounded-md -rotate-6">
-            OPT
+            GPT
           </span>
         </div>
         <h1 className="text-2xl font-extrabold text-ink mb-1">Create your account</h1>
