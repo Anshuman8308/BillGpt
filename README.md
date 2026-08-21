@@ -50,7 +50,7 @@ cream cards, black text, chat-style search).
 | Auth | JWT (python-jose), bcrypt password hashing (passlib) |
 | Database | PostgreSQL (production) / SQLite (local dev default) |
 | Migrations | Alembic |
-| Testing | pytest + FastAPI `TestClient` (44 backend tests) |
+
 
 ---
 
@@ -110,11 +110,11 @@ price-compare/
 │   │   ├── routers/                 # auth, search, comparisons, cards
 │   │   ├── mock_sources/            # 4 fake vendor "APIs"
 │   │   └── services/                # normalize, best_pay, price_history
-│   ├── tests/                       # 44 pytest tests (auth, search, ownership, price-drop)
+│   ├── tests/                       
 │   ├── alembic/                     # DB migrations
 │   ├── alembic.ini
 │   ├── requirements.txt
-│   ├── requirements-dev.txt         # pytest, httpx (test-only deps)
+│   ├── requirements-dev.txt        
 │   └── .env.example
 │
 ├── frontend/
