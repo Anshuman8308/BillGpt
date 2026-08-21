@@ -168,20 +168,7 @@ npm run dev
 
 Frontend runs at `http://localhost:5173`.
 
-### Environment variables
 
-**`backend/.env`**
-| Variable | Required | Default | Notes |
-|---|---|---|---|
-| `DATABASE_URL` | No | `sqlite:///./price_compare.db` | Set to a Postgres URL for production |
-| `JWT_SECRET` | **Yes, before deploying** | placeholder | Must be a long random string in production |
-| `ACCESS_TOKEN_EXPIRE_MINUTES` | No | `60` | |
-| `CORS_ORIGINS` | No | `localhost:5173` origins | Comma-separated list |
-
-**`frontend/.env`**
-| Variable | Required | Notes |
-|---|---|---|
-| `VITE_API_URL` | Yes | Base URL of the backend |
 
 
 
